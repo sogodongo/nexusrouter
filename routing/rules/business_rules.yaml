@@ -1,0 +1,55 @@
+rules:
+
+  - name: low_confidence_human_review
+    description: "Route to human review when classifier is uncertain"
+    condition:
+      confidence_lt: 0.60
+    action:
+      override_urgency: P2
+      route_to: human_review_queue
+      require_hitl: true
+      reason: "Classifier confidence below threshold"
+
+  - name: infra_p1_immediate
+    description: "All infrastructure alerts are P1 regardless of classifier"
+    condition:
+      intent: infra_alert
+    action:
+      override_urgency: P1
+      require_hitl: false
+      reason: "Infrastructure alerts always require immediate response"
+
+  - name: security_incident_escalate
+    description: "Security incidents always require human review"
+    condition:
+      intent: security_incident
+    action:
+      override_urgency: P1
+      require_hitl: true
+      reason: "Security incidents require human oversight"
+
+  - name: account_closure_review
+    description: "Account closures need human approval before action"
+    condition:
+      intent: account_closure
+    action:
+      override_urgency: P2
+      require_hitl: true
+      reason: "Account closures require human review to attempt retention"
+
+  - name: sales_inquiry_qualify
+    description: "All sales inquiries go to sales qualification agent"
+    condition:
+      intent: sales_inquiry
+    action:
+      override_agent: SalesQualificationAgent
+      override_urgency: P3
+      reason: "Sales inquiries routed to qualification pipeline"
+
+  - name: general_inquiry_low_priority
+    description: "General inquiries are always low priority"
+    condition:
+      intent: general_inquiry
+    action:
+      override_urgency: P4
+      reason: "General inquiries handled in batch during business hours"
