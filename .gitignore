@@ -7,3 +7,5 @@ __pycache__/
 *.egg-info/
 data/
 scripts/__pycache__/
+credentials.json
+token.json
